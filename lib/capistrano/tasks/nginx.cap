@@ -50,8 +50,8 @@ namespace :nginx do
     end
   end
 
-  before :update, :install, :enable
-  after  :update, :reload
+  before :update, 'nginx:install', 'nginx:enable'
+  after  :update, 'nginx:reload'
 end
 
 namespace :load do
@@ -60,7 +60,7 @@ namespace :load do
     set :nginx_port,          '80'
     set :nginx_host,          'localhost'
     set :nginx_user,          ->{ fetch(:user) }
-    set :nginx_config_file,   ->{ fetch(:application) }
+    set :nginx_config_file,   ->{ "#{fetch(:application)}.conf" }
     set :nginx_root,          '/etc/nginx'
   end
 end
