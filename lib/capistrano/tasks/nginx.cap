@@ -21,7 +21,9 @@ namespace :nginx do
       run "#{sudo}"
     end
   end
+end
 
-  before  'deploy:restart', 'nginx:install'
-  after   'deploy:restart', 'nginx:restart'
+namespace :deploy do
+  before :restart, 'nginx:install'
+  after  :restart, 'nginx:reload'
 end
