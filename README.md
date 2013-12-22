@@ -1,6 +1,6 @@
 # Capistrano::Nginx
 
-TODO: Write a gem description
+Please note, this does not currently work. Thank you!
 
 ## Installation
 
