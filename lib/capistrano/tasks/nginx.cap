@@ -1,3 +1,5 @@
+require 'tempfile'
+
 namespace :nginx do
   desc <<-DESC
     Installs stuff for Nginx. Docs coming soon.
@@ -9,9 +11,14 @@ namespace :nginx do
       unless File.exists?(config_file)
         config_file = File.expand_path('../../generators/capistrano/nginx/templates/_nginx_conf.erb')
       end
-      config = ERB.new(File.read(config_file)).result(binding)
 
-      put config, "/tmp/#{fetch(:nginx_config_file)}"
+      local = TempFile.new(Time.now.to_i)
+      local.write ERB.new(File.read(config_file)).result(binding)
+      local.close
+      upload(local.path, "/tmp/#{fetch(:nginx_config_file)}")
+
+      local.unlink
+
       execute :sudo, "mv", "/tmp/#{fetch(:nginx_config_file)}", "#{fetch(:nginx_root)}/sites-available/#{fetch(:nginx_config_file)}"
     end
   end
