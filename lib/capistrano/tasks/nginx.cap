@@ -22,8 +22,3 @@ namespace :nginx do
     end
   end
 end
-
-namespace :deploy do
-  before :restart, 'nginx:install'
-  after  :restart, 'nginx:reload'
-end
