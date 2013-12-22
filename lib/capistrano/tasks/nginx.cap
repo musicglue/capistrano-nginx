@@ -1,0 +1,27 @@
+namespace :nginx do
+  desc <<-DESC
+    Installs stuff for Nginx. Docs coming soon.
+  DESC
+
+  task :install do
+    on roles fetch(:web) do
+      config_file = 'config/deploy/templates/nginx_conf.erb'
+      unless File.exists?(config_file)
+        config_file = File.expand_path('../../generators/capistrano/nginx/templates/_nginx_conf.erb')
+      end
+      config = ERB.new(File.read(config_file)).result(binding)
+
+      put config, "/tmp/#{application}-nginx.conf"
+      execute :sudo, "mv", "/tmp/#{application}-nginx.conf", "/etc/nginx/sites-available/#{application}"
+    end
+  end
+
+  task :restart do
+    on roles fetch(:web) do
+      run "#{sudo}"
+    end
+  end
+
+  before  'deploy:restart', 'nginx:install'
+  after   'deploy:restart', 'nginx:restart'
+end
