@@ -29,7 +29,7 @@ namespace :load do
     set :nginx_port,          '80'
     set :nginx_host,          'localhost'
     set :nginx_user,          ->{ fetch(:user) }
-    set :nginx_config_file,   ->{ "#{fetch(:application)}.conf"}
+    set :nginx_config_file,   ->{ "#{fetch(:application)}.conf" }
     set :nginx_root,          '/etc/nginx'
   end
 end
