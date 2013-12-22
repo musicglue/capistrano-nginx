@@ -23,13 +23,13 @@ namespace :nginx do
     end
   end
 
-  task :enable do
+  task :disable do
     on roles(:web) do
       execute :sudo, 'rm', "#{fetch(:nginx_root)}/sites-enabled/#{fetch(:nginx_config_file)}"
     end
   end
 
-  task :disable do
+  task :enable do
     on roles(:web) do
       execute :sudo, 'ln', '-fs', "#{fetch(:nginx_root)}/sites-available/#{fetch(:nginx_config_file)}", "#{fetch(:nginx_root)}/sites-enabled/#{fetch(:nginx_config_file)}"
     end
