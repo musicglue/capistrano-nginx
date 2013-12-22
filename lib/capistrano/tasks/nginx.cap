@@ -50,8 +50,10 @@ namespace :nginx do
     end
   end
 
-  before :update, 'nginx:install', 'nginx:enable'
-  after  :update, 'nginx:reload'
+  before :update,   'nginx:install'
+  after  :update,   'nginx:enable'
+  after  :enable,   'nginx:reload'
+  after  :disable,  'nginx:reload'
 end
 
 namespace :load do
