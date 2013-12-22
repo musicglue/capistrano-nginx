@@ -11,14 +11,25 @@ namespace :nginx do
       end
       config = ERB.new(File.read(config_file)).result(binding)
 
-      put config, "/tmp/#{application}-nginx.conf"
-      execute :sudo, "mv", "/tmp/#{application}-nginx.conf", "/etc/nginx/sites-available/#{application}"
+      put config, "/tmp/#{fetch(:nginx_config_file)}"
+      execute :sudo, "mv", "/tmp/#{fetch(:nginx_config_file)}", "#{fetch(:nginx_root)}/sites-available/#{fetch(:nginx_config_file)}"
     end
   end
 
   task :restart do
     on roles(:web) do
-      run "#{sudo}"
+      run "sudo service #{fetch(:nginx_service)} restart"
     end
+  end
+end
+
+namespace :load do
+  task :defaults do
+    set :nginx_service,       ->{ fetch(:application) }
+    set :nginx_port,          '80'
+    set :nginx_host,          'localhost'
+    set :nginx_user,          ->{ fetch(:user) }
+    set :nginx_config_file,   ->{ "#{fetch(:application)}.conf"}
+    set :nginx_root,          '/etc/nginx'
   end
 end
