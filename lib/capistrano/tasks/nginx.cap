@@ -15,7 +15,7 @@ namespace :nginx do
       local = Tempfile.new(Time.now.to_i.to_s)
       local.write ERB.new(File.read(config_file)).result(binding)
       local.close
-      upload(local.path, "/tmp/#{fetch(:nginx_config_file)}")
+      upload!(local.path, "/tmp/#{fetch(:nginx_config_file)}")
 
       local.unlink
 
