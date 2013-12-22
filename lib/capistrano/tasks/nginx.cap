@@ -4,7 +4,7 @@ namespace :nginx do
   DESC
 
   task :install do
-    on roles fetch(:web) do
+    on roles(:web) do
       config_file = 'config/deploy/templates/nginx_conf.erb'
       unless File.exists?(config_file)
         config_file = File.expand_path('../../generators/capistrano/nginx/templates/_nginx_conf.erb')
@@ -17,7 +17,7 @@ namespace :nginx do
   end
 
   task :restart do
-    on roles fetch(:web) do
+    on roles(:web) do
       run "#{sudo}"
     end
   end
