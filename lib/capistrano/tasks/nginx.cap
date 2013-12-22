@@ -12,7 +12,7 @@ namespace :nginx do
         config_file = File.expand_path('../../generators/capistrano/nginx/templates/_nginx_conf.erb')
       end
 
-      local = TempFile.new(Time.now.to_i)
+      local = Tempfile.new(Time.now.to_i)
       local.write ERB.new(File.read(config_file)).result(binding)
       local.close
       upload(local.path, "/tmp/#{fetch(:nginx_config_file)}")
