@@ -23,11 +23,35 @@ namespace :nginx do
     end
   end
 
-  task :restart do
+  task :enable do
     on roles(:web) do
-      run "sudo service #{fetch(:nginx_service)} restart"
+      execute :sudo, 'rm', "#{fetch(:nginx_root)}/sites-enabled/#{fetch(:nginx_config_file)}"
     end
   end
+
+  task :disable do
+    on roles(:web) do
+      execute :sudo, 'ln', '-fs', "#{fetch(:nginx_root)}/sites-available/#{fetch(:nginx_config_file)}", "#{fetch(:nginx_root)}/sites-enabled/#{fetch(:nginx_config_file)}"
+    end
+  end
+
+  task :reload do
+    on roles(:web) do
+      execute :sudo, 'service', 'nginx', 'reload'
+    end
+  end
+
+  task :update do
+  end
+
+  task :test do
+    on roles(:web) do
+      execute :sudo, 'service', 'nginx', 'test'
+    end
+  end
+
+  before :update, :install, :enable
+  after  :update, :reload
 end
 
 namespace :load do
@@ -36,7 +60,7 @@ namespace :load do
     set :nginx_port,          '80'
     set :nginx_host,          'localhost'
     set :nginx_user,          ->{ fetch(:user) }
-    set :nginx_config_file,   ->{ "#{fetch(:application)}.conf" }
+    set :nginx_config_file,   ->{ fetch(:application) }
     set :nginx_root,          '/etc/nginx'
   end
 end
